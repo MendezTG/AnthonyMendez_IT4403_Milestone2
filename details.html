@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New';
+        }
+        body {
+            background-color: #000000;
+            color: #31da31;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            border: 3px solid #31da31;
+            min-height: 100vh;
+            transition: 0.3s;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            border-left: 5px solid ;
+            padding-left: 10px;
+            margin: 25px 0 15px;
+        }
+        nav {
+            text-align: left;
+            padding: 15px;
+            margin-bottom:20px;
+        }
+        nav a {
+            text-align: right;
+            display: inline-block;
+            border: 2px solid #31da31;
+            padding: 8px 15px;
+            text-decoration: none;
+            color: #31da31;
+            transition: 0.2s ease;
+        }
+        nav a:hover {
+            background-color: #31da31;
+            color: black;
+        }
+        #book {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #31da31;
+            border-radius: 8px;
+           background-color: #111;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>Book Deails Page</header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="Bookshelf.html">My Bookshelf</a>
+    </nav>
+
+    <div class="container">
+        <div id="details"></div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+
+            const parameter = new URLSearchParams(window.location.search);
+            const id = parameter.get("id");
+            
+            let url = "https://www.googleapis.com/books/v1/volumes/" + id;
+
+            $.getJSON(url, function(book){
+
+                let title = book.volumeInfo.title;
+                let thunbnail = "";
+                if(book.volumeInfo.imageLinks){
+                    thunbnail = book.volumeInfo.imageLinks.thunbnail;
+                }
+                let authors = book.volumeInfo.authors ? book.volumeInfo.authors.join(", ") : "Unknown";
+                let publisher = book.volumeInfo.publisher || "Unknown";
+                let desc = book.volumeInfo.description || "No Description Available";
+                let price = "Not Available";
+                if(book.saleInfo && book.saleInfo.listPrice){
+                    price = book.saleInfo.listPrice.amount;
+                }
+
+                $("#details").html(`
+                <h1>${title}</h1>
+                <img src="${thunbnail}">
+                <p>Author: ${authors}</p>
+                <p>Publisher: ${publisher}</p>
+                <p>${price}</p>
+                <p>${desc}</p>
+                `)
+                
+            });
+        });
+    </script>
+</body>
+</html>
